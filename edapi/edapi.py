@@ -11,6 +11,7 @@ from dotenv import load_dotenv, find_dotenv
 from requests.compat import urljoin
 
 from .types import EdAuthError, EdError, EditThreadParams, PostThreadParams
+from .types.api_types.endpoints.activity import API_ListUserActivity_Response_Item
 from .types.api_types.endpoints.files import API_PostFile_Response
 from .types.api_types.endpoints.threads import (
     API_GetThread_Response,
@@ -165,16 +166,61 @@ class EdAPI:
         _throw_error("Failed to get user info.", response.content)
 
     @_ensure_login
+    def list_user_activity(
+        self,
+        /,
+        user_id: int,
+        course_id: int,
+        *,
+        limit: int = 30,
+        offset: int = 0,
+        filter: str = "all",
+    ) -> list[API_ListUserActivity_Response_Item]:
+        """
+        Retrieve a list of comments and threads made by the user.
+
+        Limit can range from 1 to 50 (anything higher will get clipped to 50).
+        Offset can be used to list out all activity for a user iteratively,
+        through pagination.
+
+        GET /api/users/<user_id>/profile/activity?courseID=<course_id>
+        """
+        list_url = urljoin(API_BASE_URL, f"users/{user_id}/profile/activity")
+        response = self.session.get(
+            list_url,
+            params={
+                "courseID": course_id,
+                "limit": limit,
+                "offset": offset,
+                "filter": filter,
+            },
+        )
+        if response.ok:
+            response_json: API_ListUserActivity_Response = response.json()
+            return response_json.get("items", [])  # default to empty list
+
+        _throw_error(
+            f"Failed to list user activity for user {user_id} in course {course_id}.",
+            response.content,
+        )
+
+    @_ensure_login
     def list_threads(
-        self, course_id: int, limit: int = 30, sort: str = "new"
+        self, /, course_id: int, *, limit: int = 30, offset: int = 0, sort: str = "new"
     ) -> list[API_Thread_WithUser]:
         """
-        Retrieve list of threads, with the given limit and sort.
+        Retrieve list of threads, with the given limit, offset, and sort.
+
+        Limit can range from 1 to 100 (anything higher will get clipped to 100).
+        Offset can be used to list out all of the threads in a course iteratively,
+        through pagination.
 
         GET /api/courses/<course_id>/threads
         """
         list_url = urljoin(API_BASE_URL, f"courses/{course_id}/threads")
-        response = self.session.get(list_url, params={"limit": limit, "sort": sort})
+        response = self.session.get(
+            list_url, params={"limit": limit, "offset": offset, "sort": sort}
+        )
         if response.ok:
             response_json: API_ListThreads_Response = response.json()
             return response_json["threads"]

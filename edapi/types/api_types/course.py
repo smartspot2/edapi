@@ -2,7 +2,7 @@
 Course type used in the Ed API.
 """
 
-from typing import TypedDict
+from typing import Optional, TypedDict
 
 from .category import API_Category, API_Category_Recursive
 from .content import ContentString
@@ -75,7 +75,7 @@ class API_Course_Settings(TypedDict):
     voiceover: bool
     highlightable_languages: list[str]
     user_avatars_enabled: bool
-    snippet_language_override: str | None
+    snippet_language_override: Optional[str]
     codecast_enabled: bool
     codecast_student_creation_disabled: bool
     poll_enabled: bool
@@ -107,7 +107,7 @@ class API_Course_Settings_Discussion(TypedDict):
     category_unselected: bool
     snippet_languages: list[str]
     default_snippet_language: str
-    rejection_comment_template: ContentString | None
+    rejection_comment_template: Optional[ContentString]
     bot_source: None  # unknown what these options are for
     bot_enabled: bool
     bot_enabled_v2: bool

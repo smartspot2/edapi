@@ -5,7 +5,7 @@ There are two kinds of user types; the full type with all fields,
 and a shortened type with only a subset of the fields.
 """
 
-from typing import Any, TypedDict
+from typing import Any, Optional, TypedDict
 
 
 class API_User(TypedDict):
@@ -17,20 +17,20 @@ class API_User(TypedDict):
     role: str
     name: str
     email: str
-    username: str | None
-    avatar: str | None
+    username: Optional[str]
+    avatar: Optional[str]
     features: Any  # unsure what these are
     settings: "API_User_Settings"
     activated: bool
     created_at: str
-    course_role: str | None
+    course_role: Optional[str]
     secondary_emails: list[str]
     has_password: bool
     is_lti: bool
     is_sso: bool
     can_change_name: bool
     has_pats: bool
-    realm_id: int | None
+    realm_id: Optional[int]
 
 
 class API_User_Short(TypedDict):
@@ -51,7 +51,7 @@ class API_User_Settings(TypedDict):
     User settings type, included in the full user type.
     """
 
-    digest_interval: int | None
+    digest_interval: Optional[int]
     discuss_feed_style: str
     accessible: bool
     locale: str

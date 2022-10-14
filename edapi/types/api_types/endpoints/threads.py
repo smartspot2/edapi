@@ -2,7 +2,7 @@
 Types for endpoints involving creating and updating threads.
 """
 
-from typing import Any, TypedDict
+from typing import Any, Optional, TypedDict
 
 from ..content import ContentString
 from ..thread import API_Thread_WithComments, API_Thread_WithUser
@@ -119,8 +119,8 @@ class API_PutThread_Response_Thread(TypedDict):
     user_id: int  # user who created the post
     course_id: int
     editor_id: int
-    accepted_id: int | None
-    duplicate_id: int | None
+    accepted_id: Optional[int]
+    duplicate_id: Optional[int]
     number: int  # post number relative to the course
     type: str
     title: str
@@ -150,6 +150,6 @@ class API_PutThread_Response_Thread(TypedDict):
     approved_status: str
     created_at: str
     updated_at: str
-    deleted_at: str | None
-    pinned_at: str | None
+    deleted_at: Optional[str]
+    pinned_at: Optional[str]
     anonymous_id: int

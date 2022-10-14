@@ -2,7 +2,7 @@
 Types for /api/user endpoint.
 """
 
-from typing import Any, TypedDict
+from typing import Any, Optional, TypedDict
 
 from ..course import API_Course
 from ..user import API_User
@@ -36,13 +36,13 @@ class API_User_Response_Course_Role(TypedDict):
 
     user_id: int
     course_id: int
-    lab_id: int | None
+    lab_id: Optional[int]
     role: str
     tutorial: None  # unsure what this is for
     digest: bool
     settings: "API_User_Response_Course_Role_Settings"
     created_at: str
-    deleted_at: str | None
+    deleted_at: Optional[str]
 
 
 class API_User_Response_Course_Role_Settings(TypedDict):
@@ -50,8 +50,8 @@ class API_User_Response_Course_Role_Settings(TypedDict):
     Course role settings type included in the user info response.
     """
 
-    digest_interval: int | None  # interval in minutes
-    email_announcements: bool | None
+    digest_interval: Optional[int]  # interval in minutes
+    email_announcements: Optional[bool]
 
 
 class API_User_Response_Realm(TypedDict):

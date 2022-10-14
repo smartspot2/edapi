@@ -2,7 +2,7 @@
 Thread type used in the Ed API.
 """
 
-from typing import TypedDict
+from typing import Optional, TypedDict
 
 from .content import ContentString
 from .user import API_User_Short
@@ -17,8 +17,8 @@ class API_Thread(TypedDict):
     user_id: int  # user who created the post
     course_id: int
     editor_id: int
-    accepted_id: int | None
-    duplicate_id: int | None
+    accepted_id: Optional[int]
+    duplicate_id: Optional[int]
     number: int  # post number relative to the course
     type: str
     title: str
@@ -48,8 +48,8 @@ class API_Thread(TypedDict):
     approved_status: str
     created_at: str
     updated_at: str
-    deleted_at: str | None
-    pinned_at: str | None
+    deleted_at: Optional[str]
+    pinned_at: Optional[str]
     anonymous_id: int
     vote: int
     is_seen: bool
@@ -57,7 +57,7 @@ class API_Thread(TypedDict):
     is_watched: bool
     glanced_at: str
     new_reply_count: int
-    duplicate_title: str | None
+    duplicate_title: Optional[str]
 
 
 class API_Thread_WithComments(API_Thread):
@@ -86,8 +86,8 @@ class API_Thread_Comment(TypedDict):
     user_id: int
     course_id: int
     thread_id: int
-    parent_id: int | None
-    editor_id: int | None
+    parent_id: Optional[int]
+    editor_id: Optional[int]
     number: int
     type: str  # only seen comment
     kind: str  # only seen normal
@@ -100,8 +100,8 @@ class API_Thread_Comment(TypedDict):
     is_private: bool
     is_resolved: bool
     created_at: str
-    updated_at: str | None
-    deleted_at: str | None
+    updated_at: Optional[str]
+    deleted_at: Optional[str]
     anonymous_id: int
     vote: int
     comments: list["API_Thread_Comment"]  # recursive for replies

@@ -4,7 +4,7 @@ Category type usd in the Ed API.
 There are two versions; a recursive version and a non-recursive version.
 """
 
-from typing import TypedDict
+from typing import Optional, TypedDict
 
 from .content import ContentString
 
@@ -19,7 +19,7 @@ class API_Category(TypedDict):
 
     name: str
     subcategories: list[str]
-    thread_template: ContentString | None
+    thread_template: Optional[ContentString]
 
 
 class API_Category_Recursive(TypedDict):
@@ -32,4 +32,4 @@ class API_Category_Recursive(TypedDict):
 
     name: str
     subcategories: list["API_Category_Recursive"]
-    thread_template: ContentString | None
+    thread_template: Optional[ContentString]

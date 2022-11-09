@@ -2,7 +2,7 @@
 Activity type used in the Ed API.
 """
 
-from typing import TypedDict, Union
+from typing import Literal, TypedDict, Union
 
 
 class API_ListUserActivity_Response(TypedDict):
@@ -25,7 +25,7 @@ class API_ListUserActivity_Response_CommentItem(TypedDict):
     Item type for a comment, included in the user activity response
     """
 
-    type = "comment"
+    type: Literal["comment"]
     value: "API_ListUserActivity_Response_CommentItem_Value"
 
 
@@ -34,7 +34,7 @@ class API_ListUserActivity_Response_ThreadItem(TypedDict):
     Item type for a thread, included in the user activity response
     """
 
-    type = "thread"
+    type: Literal["thread"]
     value: "API_ListUserActivity_Response_ThreadItem_Value"
 
 

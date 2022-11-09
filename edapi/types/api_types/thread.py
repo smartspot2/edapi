@@ -65,7 +65,7 @@ class API_Thread_WithComments(API_Thread):
     Thread type with comments and answers included.
     """
 
-    answers: list  # TODO: specify answer type
+    answers: list["API_Thread_Comment"]
     comments: list["API_Thread_Comment"]
 
 

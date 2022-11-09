@@ -7,11 +7,14 @@ import os
 from typing import NoReturn, Optional
 
 import requests
-from dotenv import load_dotenv, find_dotenv
+from dotenv import find_dotenv, load_dotenv
 from requests.compat import urljoin
 
 from .types import EdAuthError, EdError, EditThreadParams, PostThreadParams
-from .types.api_types.endpoints.activity import API_ListUserActivity_Response_Item
+from .types.api_types.endpoints.activity import (
+    API_ListUserActivity_Response,
+    API_ListUserActivity_Response_Item,
+)
 from .types.api_types.endpoints.files import API_PostFile_Response
 from .types.api_types.endpoints.threads import (
     API_GetThread_Response,

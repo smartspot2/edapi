@@ -22,11 +22,25 @@ If the token is found, then a brief validation check through `EdAPI.get_user_inf
 
   Retrieves the user info.
 
-- `EdAPI.list_threads(course_id: int, limit: int = 30, sort: str = "new")`
+- `EdAPI.list_user_activity(user_id, course_id, limit: int = 30, offset: int = 0, filter: str = "all")`
+
+  Retrieves a list of comments and thread made by the user.
+
+  - `limit`: maximum number of entries to retrieve (default: 30, clipped to 50)
+
+  - `offset`: offset for pagination in retrieving user activity (default 0)
+
+  - `filter`: filter for what user activity to retrieve (default: "all")
+
+    Possible filters include: "all", "thread", "answer", "comment"
+
+- `EdAPI.list_threads(course_id: int, limit: int = 30, offset: int = 0, sort: str = "new")`
 
   Retrieves a list of threads associated with the course.
 
-  - `limit`: maximum number of threads to retrieve (default: 30)
+  - `limit`: maximum number of threads to retrieve (default: 30, clipped to 100)
+
+  - `offset`: offset for pagination in retrieving threads
 
   - `sort`: how to sort the threads (default: `"new"`)
 
@@ -806,3 +820,50 @@ Stars the given thread.
 #### `POST /api/threads/<thread_id>/unstar`
 
 Unstars the given thread.
+
+#### `GET /api/users/<user_id>/profile/activity`
+
+Retrieves a list of all activity for a given user.
+
+```python
+{
+  "items": [
+    {
+      "type": "comment",
+      "value": {
+        "id": int,
+        "type": "comment" | "answer",
+        "document": str,
+        "course_id": int,
+        "course_name": str,
+        "course_code": str,
+        "thread_id": int,
+        "thread_title": str,
+        "thread_category": str,
+        "thread_subcategory": str,
+        "thread_subsubcategory": str,
+        "created_at": str,
+      }
+    },
+    # OR
+    {
+      "type": "thread",
+      "value": {
+        "id": int,
+        "type": "post" | "question" | "announcement",
+        "course_id": int,
+        "course_name": str,
+        "course_code": str,
+        "title": str,
+        "document": str,
+        "category": str,
+        "subcategory": str,
+        "subsubcategory": str,
+        "is_private": bool,
+        "approved_status": str,
+        "created_at": str
+      }
+    }
+  ]
+}
+```

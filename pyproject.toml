@@ -4,8 +4,9 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "edapi"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
     "requests",
-    "python-dotenv"
+    "python-dotenv",
+    "beautifulsoup4"
 ]

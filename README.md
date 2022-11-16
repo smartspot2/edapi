@@ -14,6 +14,14 @@ This package is still a work in progress, and currently contains the following f
 
 This list may expand as the package is developed further.
 
+## Installation
+
+This package is uploaded to PyPI: [https://pypi.org/project/edapi/](https://pypi.org/project/edapi/); the easiest way to install is with `pip3 install edapi`.
+
+### Building the package
+
+You can also build the package manually; to do so, just run `python3 -m build` in the root directory. This will create a `dist/` folder containing the package wheel, which can be installed via `pip3 install dist/edapi-x.x.x-py3-none.whl`.
+
 ## Documentation
 
 Most documentation can be found in `edapi/docs/api_docs.md`; it contains documentation for the API, and also several notes on the HTTP endpoints as I've worked through this package.
@@ -52,7 +60,3 @@ There are utility methods included to help with the process of creating thread d
     - Returns a new `BeautifulSoup` instance for the new document, along with the root document tag (use the document tag to serialize for the API).
 - `parse_document(content: str)`: parses the content string, which holds the XML content of a thread.
     - Similar to `new_document`, returns a new `BeautifulSoup` instance for the parsed document, along with the root document tag.
-
-## Building the package
-
-To build the package, just run `python3 -m build` in the root directory. This will create a `dist/` folder containing the package wheel, which can be installed via `pip3 install dist/edapi-x.x.x-py3-none.whl`.

@@ -10,7 +10,9 @@ import requests
 from dotenv import find_dotenv, load_dotenv
 from requests.compat import urljoin
 
-from .types import EdAuthError, EdError, EditThreadParams, PostThreadParams
+from .types import EdAuthError, EdError, EditThreadParams, PostThreadParams # Don't need to import anything for lesson functionality
+
+
 from .types.api_types.endpoints.activity import (
     API_ListUserActivity_Response,
     API_ListUserActivity_Response_Item,
@@ -26,6 +28,12 @@ from .types.api_types.endpoints.threads import (
 )
 from .types.api_types.endpoints.user import API_User_Response
 from .types.api_types.thread import API_Thread_WithComments, API_Thread_WithUser
+
+# TODO: Figure out if this is needed
+# from .types.api_types.endpoints.lessons import (
+
+# )
+from .types.api_types.lesson import API_Lesson
 
 ANSI_BLUE = lambda text: f"\u001b[34m{text}\u001b[0m"
 ANSI_GREEN = lambda text: f"\u001b[32m{text}\u001b[0m"
@@ -168,7 +176,7 @@ class EdAPI:
 
         _throw_error("Failed to get user info.", response.content)
 
-    @_ensure_login
+
     def list_user_activity(
         self,
         /,
@@ -206,7 +214,7 @@ class EdAPI:
             f"Failed to list user activity for user {user_id} in course {course_id}.",
             response.content,
         )
-
+    
     @_ensure_login
     def list_threads(
         self, /, course_id: int, *, limit: int = 30, offset: int = 0, sort: str = "new"
@@ -231,6 +239,41 @@ class EdAPI:
         _throw_error(
             f"Failed to list threads for course {course_id}.", response.content
         )
+
+
+    # New function:
+    # This function is what we need to implement to get the list of lessons
+    @_ensure_login
+    def list_lessons(self, course_id: int) -> API_Lesson:
+        """
+        Retrieve the details for lessons.
+
+        GET /api/courses/<course_id>/lessons
+
+        """
+        lesson_url = urljoin(API_BASE_URL, f"courses/{course_id}/lessons")
+        response = self.session.get(lesson_url)
+        if response.ok:
+            response_json: API_GetThread_Response = response.json()
+            return response_json["lesson"]
+
+        _throw_error(f"Failed to get lesson {course_id}.", response.content)
+
+    # Maybe do this later.
+    # New function: 
+    # def get_lesson(self, lesson_id: int) -> API_Lesson:
+    #     """
+    #     Retrieve the details for a lesson, given its id.
+
+    #     GET /api/lessons/<lesson_id>
+    #     """
+    #     lesson_url = urljoin(API_BASE_URL, f"lessons/{lesson_id}")
+    #     response = self.session.get(lesson_url)
+    #     if response.ok:
+    #         response_json: API_GetThread_Response = response.json()
+    #         return response_json["lesson"]
+
+    #     _throw_error(f"Failed to get lesson {lesson_id}.", response.content)
 
     @_ensure_login
     def get_thread(self, thread_id: int) -> API_Thread_WithComments:

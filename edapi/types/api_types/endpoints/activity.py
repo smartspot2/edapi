@@ -17,7 +17,16 @@ class API_ListUserActivity_Response(TypedDict):
 API_ListUserActivity_Response_Item = Union[
     "API_ListUserActivity_Response_CommentItem",
     "API_ListUserActivity_Response_ThreadItem",
+    "API_ListUserLesson_Response_LessonItem",
 ]
+
+class API_ListUserLesson_Response_LessonItem(TypedDict):
+    """
+    Item Type for a lesson, included in the user lesson response
+    """
+
+    type: Literal["lesson"]
+    value: "API_ListUserLesson_Response_LessonItem_Value"
 
 
 class API_ListUserActivity_Response_CommentItem(TypedDict):
@@ -36,6 +45,14 @@ class API_ListUserActivity_Response_ThreadItem(TypedDict):
 
     type: Literal["thread"]
     value: "API_ListUserActivity_Response_ThreadItem_Value"
+
+
+class API_ListUserActivity_Response_Item_Value(TypedDict):
+    lesson_id: int
+    type: str
+
+
+
 
 
 class API_ListUserActivity_Response_CommentItem_Value(TypedDict):

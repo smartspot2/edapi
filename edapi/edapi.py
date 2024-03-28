@@ -26,6 +26,8 @@ from .types.api_types.endpoints.threads import (
     API_PutThread_Response,
     API_PutThread_Response_Thread,
 )
+from .types.api_types.endpoints.lessons import API_GetLesson
+
 from .types.api_types.endpoints.user import API_User_Response
 from .types.api_types.thread import API_Thread_WithComments, API_Thread_WithUser
 
@@ -81,7 +83,7 @@ def _throw_error(message: str, error_content: bytes) -> NoReturn:
     raise EdError({"message": message, "response": error_json})
 
 
-class EdAPI:
+class EdAPIWL:
     """
     Class for Ed API integration.
 
@@ -254,7 +256,7 @@ class EdAPI:
         lesson_url = urljoin(API_BASE_URL, f"courses/{course_id}/lessons")
         response = self.session.get(lesson_url)
         if response.ok:
-            response_json: API_GetThread_Response = response.json()
+            response_json: API_GetLesson = response.json()
             return response_json["lesson"]
 
         _throw_error(f"Failed to get lesson {course_id}.", response.content)

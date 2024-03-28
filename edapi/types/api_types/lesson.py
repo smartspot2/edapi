@@ -8,6 +8,7 @@ class API_Lesson(TypedDict):
     """
 
     # Lesson fields. Not all fields are included.
+    lesson: 53507 # temp class id
     id: int
     title: str
     type: str 

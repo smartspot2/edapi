@@ -256,8 +256,10 @@ class EdAPIWL:
         lesson_url = urljoin(API_BASE_URL, f"courses/{course_id}/lessons")
         response = self.session.get(lesson_url)
         if response.ok:
+            
             response_json: API_GetLesson = response.json()
-            return response_json["lesson"]
+                      
+            return response_json
 
         _throw_error(f"Failed to get lesson {course_id}.", response.content)
 

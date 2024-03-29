@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "edapiwl"
-version = "0.0.2"
+version = "0.0.3"
 description = "An unofficial integration of the Ed API with Python (with lessons)"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -18,4 +18,4 @@ classifiers = [
 ]
 
 [project.urls]
-"Homepage" = "https://github.com/trevmoy/edapi"
+"Homepage" = "https://github.com/trevmoy/edapiwl"

@@ -16,7 +16,7 @@ class API_ListUserActivity_Response(TypedDict):
 # Union type for both comment and thread items
 API_ListUserActivity_Response_Item = Union[
     "API_ListUserActivity_Response_CommentItem",
-    "API_ListUserActivity_Response_ThreadItem",
+    "API_ListUserActivity_Response_ThreadItem"
 ]
 
 
@@ -36,6 +36,14 @@ class API_ListUserActivity_Response_ThreadItem(TypedDict):
 
     type: Literal["thread"]
     value: "API_ListUserActivity_Response_ThreadItem_Value"
+
+
+class API_ListUserActivity_Response_Item_Value(TypedDict):
+    lesson_id: int
+    type: str
+
+
+
 
 
 class API_ListUserActivity_Response_CommentItem_Value(TypedDict):

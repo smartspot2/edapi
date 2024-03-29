@@ -11,6 +11,8 @@ from dotenv import find_dotenv, load_dotenv
 from requests.compat import urljoin
 
 from .types import EdAuthError, EdError, EditThreadParams, PostThreadParams
+
+
 from .types.api_types.endpoints.activity import (
     API_ListUserActivity_Response,
     API_ListUserActivity_Response_Item,
@@ -24,8 +26,12 @@ from .types.api_types.endpoints.threads import (
     API_PutThread_Response,
     API_PutThread_Response_Thread,
 )
+from .types.api_types.endpoints.lessons import API_GetLesson
+
 from .types.api_types.endpoints.user import API_User_Response
 from .types.api_types.thread import API_Thread_WithComments, API_Thread_WithUser
+
+from .types.api_types.lesson import API_Lesson
 
 ANSI_BLUE = lambda text: f"\u001b[34m{text}\u001b[0m"
 ANSI_GREEN = lambda text: f"\u001b[32m{text}\u001b[0m"
@@ -206,7 +212,7 @@ class EdAPI:
             f"Failed to list user activity for user {user_id} in course {course_id}.",
             response.content,
         )
-
+    
     @_ensure_login
     def list_threads(
         self, /, course_id: int, *, limit: int = 30, offset: int = 0, sort: str = "new"
@@ -231,6 +237,26 @@ class EdAPI:
         _throw_error(
             f"Failed to list threads for course {course_id}.", response.content
         )
+
+
+   
+    @_ensure_login
+    def list_lessons(self, course_id: int) -> API_Lesson:
+        """
+        Retrieve the details for lessons.
+
+        GET /api/courses/<course_id>/lessons
+
+        """
+        lesson_url = urljoin(API_BASE_URL, f"courses/{course_id}/lessons")
+        response = self.session.get(lesson_url)
+        if response.ok:
+            
+            response_json: API_GetLesson = response.json()
+                      
+            return response_json
+
+        _throw_error(f"Failed to get lesson {course_id}.", response.content)
 
     @_ensure_login
     def get_thread(self, thread_id: int) -> API_Thread_WithComments:

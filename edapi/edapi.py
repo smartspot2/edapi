@@ -83,7 +83,7 @@ def _throw_error(message: str, error_content: bytes) -> NoReturn:
     raise EdError({"message": message, "response": error_json})
 
 
-class EdAPIWL:
+class EdAPI:
     """
     Class for Ed API integration.
 

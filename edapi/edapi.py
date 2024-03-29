@@ -178,7 +178,7 @@ class EdAPI:
 
         _throw_error("Failed to get user info.", response.content)
 
-
+    @_ensure_login
     def list_user_activity(
         self,
         /,

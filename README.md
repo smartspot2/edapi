@@ -11,6 +11,7 @@ This package is still a work in progress, and currently contains the following f
 * Uploading files to Ed (through direct file upload)
 * Get user information
 * List existing threads
+* Lock and unlock threads
 
 This list may expand as the package is developed further.
 

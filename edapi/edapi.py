@@ -10,6 +10,8 @@ import requests
 from dotenv import find_dotenv, load_dotenv
 from requests.compat import urljoin
 
+from edapi.types.api_types.endpoints.analytics import API_Analytics_Users_Response
+
 from .types import EdAuthError, EdError, EditThreadParams, PostThreadParams
 from .types.api_types.endpoints.activity import (
     API_ListUserActivity_Response,
@@ -26,6 +28,7 @@ from .types.api_types.endpoints.threads import (
 )
 from .types.api_types.endpoints.user import API_User_Response
 from .types.api_types.thread import API_Thread_WithComments, API_Thread_WithUser
+from .types.api_types.user import API_User_WithEmail
 
 ANSI_BLUE = lambda text: f"\u001b[34m{text}\u001b[0m"
 ANSI_GREEN = lambda text: f"\u001b[32m{text}\u001b[0m"
@@ -177,7 +180,7 @@ class EdAPI:
         *,
         limit: int = 30,
         offset: int = 0,
-        filter: str = "all",
+        filter: str = "all",  # pylint: disable=redefined-builtin
     ) -> list[API_ListUserActivity_Response_Item]:
         """
         Retrieve a list of comments and threads made by the user.
@@ -231,6 +234,20 @@ class EdAPI:
         _throw_error(
             f"Failed to list threads for course {course_id}.", response.content
         )
+
+    def list_users(self, /, course_id: int) -> list[API_User_WithEmail]:
+        """
+        Retrieve list of users.
+
+        GET /api/courses/<course_id>/analytics/users
+        """
+        list_url = urljoin(API_BASE_URL, f"courses/{course_id}/analytics/users")
+        response = self.session.get(list_url)
+        if response.ok:
+            response_json: API_Analytics_Users_Response = response.json()
+            return response_json["users"]
+
+        _throw_error(f"Failed to list users for course {course_id}", response.content)
 
     @_ensure_login
     def get_thread(self, thread_id: int) -> API_Thread_WithComments:
@@ -287,10 +304,14 @@ class EdAPI:
 
     @_ensure_login
     def edit_thread(
-        self, thread_id: int, params: EditThreadParams
+        self, thread_id: int, params: EditThreadParams, unlock_thread=True
     ) -> API_PutThread_Response_Thread:
         """
         Edit the details for a given thread.
+
+        If `unlock_thread` is True (default), then the thread is unlocked
+        before editing. Otherwise, if `unlock_thread` is False, no attempt
+        to unlock the thread will be made, and the edit request will fail.
 
         PUT /api/threads/<thread_id>
 
@@ -299,9 +320,17 @@ class EdAPI:
 
         thread = self.get_thread(thread_id)
 
+        relock = False
+        if unlock_thread and thread["is_locked"]:
+            # locked thread, so unlock it and re-lock at the very end
+            relock = True
+            self.unlock_thread(thread_id)
+            # fetch thread again in case any side-effects happen
+            thread = self.get_thread(thread_id)
+
         # set items
         for key, val in params.items():
-            # ensure we're only modifying values that have appeared in the existing thread objectf
+            # ensure we're only modifying values that have appeared in the existing thread object
             if key in thread and val is not None:
                 thread[key] = val
 
@@ -310,6 +339,11 @@ class EdAPI:
         response = self.session.put(thread_url, json=request_json)
         if response.ok:
             response_json: API_PutThread_Response = response.json()
+
+            if relock:
+                # relock thread if necessary
+                self.lock_thread(thread_id)
+
             return response_json["thread"]
 
         _throw_error(f"Failed to edit thread {thread_id}.", response.content)
@@ -337,3 +371,27 @@ class EdAPI:
             return urljoin(STATIC_FILE_BASE_URL, file_id)
 
         _throw_error(f"Failed to upload file {filename}.", response.content)
+
+    @_ensure_login
+    def lock_thread(self, thread_id: int) -> None:
+        """
+        Lock a given thread.
+
+        POST /api/threads/<thread_id>/lock
+        """
+        lock_url = urljoin(API_BASE_URL, f"threads/{thread_id}/lock")
+        response = self.session.post(lock_url)
+        if not response.ok:
+            _throw_error(f"Failed to lock thread {thread_id}.", response.content)
+
+    @_ensure_login
+    def unlock_thread(self, thread_id: int) -> None:
+        """
+        Unlock a given thread.
+
+        POST /api/threads/<thread_id>/unlock
+        """
+        unlock_url = urljoin(API_BASE_URL, f"threads/{thread_id}/unlock")
+        response = self.session.post(unlock_url)
+        if not response.ok:
+            _throw_error(f"Failed to unlock thread {thread_id}.", response.content)

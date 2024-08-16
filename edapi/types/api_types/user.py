@@ -46,6 +46,19 @@ class API_User_Short(TypedDict):
     tutorials: dict[int, str]
 
 
+class API_User_WithEmail(TypedDict):
+    """
+    User type with email; returned by the analytics endpoint.
+    """
+
+    avatar: Optional[str]
+    course_role: Optional[str]
+    email: str
+    name: str
+    user_id: int
+    username: Optional[str]
+
+
 class API_User_Settings(TypedDict):
     """
     User settings type, included in the full user type.

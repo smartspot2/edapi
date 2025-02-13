@@ -55,7 +55,11 @@ def _ensure_login(func):
 
     def login_wrapper(self, *args, **kwargs):
         if self.api_token is None:
-            self.login()
+            if self.interactive:
+                self.login()
+            else:
+                # no interaction; throw error instead.
+                raise EdAuthError({"message": "No API token was provided"})
         return func(self, *args, **kwargs)
 
     return login_wrapper
@@ -66,7 +70,7 @@ def _throw_error(message: str, error_content: bytes) -> NoReturn:
     Throw an error with the given message and the error content.
     """
     error_json = json.loads(error_content)
-    if error_json.get("code") == "bad_token":
+    if error_json.get("code", None) == "bad_token":
         # auth error
         raise EdAuthError(
             {"message": f"Ed authentication error; {message}", "response": error_json}
@@ -83,11 +87,27 @@ class EdAPI:
     This class is responsible for authenticating the user, and for making API calls to the Ed API.
     """
 
-    def __init__(self):
-        self.api_token = None
+    def __init__(self, api_token: Optional[str] = None, interactive=True):
+        """
+        Initialize the Ed API.
+
+        If `api_token` is specified here, no attempt will be made
+        to load a token from a `.env` file.
+
+        By default, `interactive=True`, and the user will be prompted
+        if no valid API token is found.
+        If `interactive` is set to `False`, no such prompt will occur,
+        and methods will raise an error.
+
+        The `login()` method can still be called for interactive behavior.
+        """
+        self.api_token = api_token
+        self.interactive = interactive
         self.session = requests.Session()
 
-        self._load_api_token()
+        if self.api_token is None:
+            # only attempt to load the API token from a .env file if none is specified.
+            self._load_api_token()
 
     def _load_api_token(self) -> Optional[API_User_Response]:
         """

@@ -27,8 +27,10 @@ from .types.api_types.endpoints.threads import (
     API_PutThread_Response_Thread,
 )
 from .types.api_types.endpoints.user import API_User_Response
+from .types.api_types.endpoints.resources import API_GetResource_Response
 from .types.api_types.thread import API_Thread_WithComments, API_Thread_WithUser
 from .types.api_types.user import API_User_WithEmail
+from .types.api_types.resources import API_Resource
 
 ANSI_BLUE = lambda text: f"\u001b[34m{text}\u001b[0m"
 ANSI_GREEN = lambda text: f"\u001b[32m{text}\u001b[0m"
@@ -415,3 +417,18 @@ class EdAPI:
         response = self.session.post(unlock_url)
         if not response.ok:
             _throw_error(f"Failed to unlock thread {thread_id}.", response.content)
+
+    @_ensure_login
+    def get_resources(self, course_id: int) -> list[API_Resource]:
+        """
+        Retrieve resources for a course.
+
+        GET /api/courses/<course_id>/resources
+        """
+        resources_url = urljoin(API_BASE_URL, f"courses/{course_id}/resources")
+        response = self.session.get(resources_url)
+        if response.ok:
+            response_json: API_GetResource_Response = response.json()
+            return response_json["resources"]
+        
+        _throw_error(f"Failed to get resources for course {course_id}.", response.content)

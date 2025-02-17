@@ -12,7 +12,7 @@ from requests.compat import urljoin
 
 from edapi.types.api_types.endpoints.analytics import API_Analytics_Users_Response
 
-from .types import EdAuthError, EdError, EditThreadParams, PostThreadParams
+from .types import EdAuthError, EdError, EditThreadParams, PostThreadParams, PostCommentParams
 from .types.api_types.endpoints.activity import (
     API_ListUserActivity_Response,
     API_ListUserActivity_Response_Item,
@@ -321,6 +321,20 @@ class EdAPI:
             return response_json["thread"]
 
         _throw_error(f"Failed to post thread in course {course_id}.", response.content)
+
+    @_ensure_login
+    def post_comment(
+        self, thread_id: int, params: PostCommentParams
+    ):
+        """
+        Creates a new comment under the given thread.
+
+        POST /api/threads/<thread_id>/comments
+        """
+        thread_url = urljoin(API_BASE_URL, f"threads/{thread_id}/comments")
+        response = self.session.post(thread_url, json={"comment": params})
+        if not response.ok:
+            _throw_error(f"Failed to post comment in thread {thread_id}.", response.content)
 
     @_ensure_login
     def edit_thread(

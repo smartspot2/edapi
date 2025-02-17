@@ -53,3 +53,13 @@ class PostThreadParams(TypedDict, total=True):
     is_anonymous: bool
     is_megathread: bool
     anonymous_comments: bool
+
+class PostCommentParams(TypedDict, total=True):
+    """
+    Parameters for posting a new comment.
+    All parameters are required.
+    """
+    content: str
+    is_anonymous: bool
+    is_private: bool
+    type: str
